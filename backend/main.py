@@ -4,6 +4,7 @@ from models.TicketChat import TicketChat
 from models.Usuario import Usuario
 from config.db import Base,engine
 from routes.auth import auth_router
+from routes.tickets import ticket_router
 from fastapi.middleware.cors import CORSMiddleware
 
 # Crear las tablas en MySQL Workbench si no existen
@@ -22,6 +23,7 @@ app.add_middleware(
 
 #Registrar enrutadores
 app.include_router(auth_router)
+app.include_router(ticket_router)
 
 @app.get('/')
 def Bienvenida():
