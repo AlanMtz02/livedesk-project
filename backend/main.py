@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from models.Mensaje import Mensaje
 from models.TicketChat import TicketChat
-from models.Usuarios import Usuario
+from models.Usuario import Usuario
 from config.db import Base,engine
 
 # Crear las tablas en MySQL Workbench si no existen
