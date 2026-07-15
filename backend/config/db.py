@@ -6,8 +6,9 @@ from sqlalchemy.orm import declarative_base,sessionmaker
 #Cargar las variables de entorno del archivo .env
 load_dotenv()
 
-#Obtener la url de la base de datos
-DATABASE_URL=os.getenv('DATABASE_URL')
+#Obtener la url de la base de datos. Valor por defecto si no encuentra DATABASE URL
+DATABASE_URL = os.getenv(
+    'DATABASE_URL', 'mysql+pymysql://root:password@localhost:3306/livedesk')
 
 #1.Varible que me permite crear la conexion a la BD
 engine = create_engine(
