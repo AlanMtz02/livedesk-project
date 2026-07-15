@@ -14,8 +14,9 @@ class UsuarioOutSchema(BaseModel):
     correo:EmailStr
     rol:str
 
-    # Configuración para que Pydantic pueda leer objetos de SQLAlchemy (ORM)    class Config:
-    from_attributes = True
+    # Configuración para que Pydantic pueda leer objetos de SQLAlchemy (ORM)    
+    class Config:
+        from_attributes = True
 
 class UsuarioUpdateSchema(BaseModel):
     # Todos los campos son opcionales para permitir actualizaciones parciales
