@@ -5,13 +5,22 @@ from schemas.Usuario import UsuarioUpdateSchema,UsuarioCreateSchema,UsuarioOutSc
 from models.Usuario import Usuario
 from utils.seguridad import generar_hash_password,verificar_password
 from utils.jwt import crear_token_acceso,decodificar_token_acceso
+from utils.dependencies import obtener_usuario_actual
 
 auth_router=APIRouter(prefix='/api/auth',tags=['Autenticación'])
 
 #Necesita token y solo el supervisor puede crear agentes
 @auth_router.post('/register',response_model=UsuarioOutSchema,status_code=status.HTTP_201_CREATED)
-def registrar_usuario(datos:UsuarioCreateSchema,db:Session=Depends(get_db)):
-    #Validar si el correo ya esta registrado
+def registrar_usuario(datos:UsuarioCreateSchema,usuario_actual:dict=Depends(obtener_usuario_actual),db:Session=Depends(get_db)):
+    """
+    Registra un nuevo usuario en el sistema.
+    PROTEGIDO: Solo un supervisor autenticado puede registrar nuevos usuarios.
+    """
+    #Validar que tenga un rol de supervisor
+    if usuario_actual.get('rol')!='supervisor':
+        raise HTTPException(status_code=403,detail='No tienes permisos de supervisor para registrar nuevos usuarios.')
+    
+    #Si el correo esta registrado ya, mandar httpexception
     usuario_existente=db.query(Usuario).filter(Usuario.correo==datos.correo).first()
     if usuario_existente:
         raise HTTPException(status_code=400, detail='El correo ya esta registrado.')
