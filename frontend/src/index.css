@@ -1,0 +1,30 @@
+/* ==========================================================================
+   RESET GLOBAL Y ESTILOS BASE
+   ========================================================================== */
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,body,#root{
+  height: 100%;
+  width: 100%;
+  overflow: hidden; /* Bloquea el scroll general de la pantalla */
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: #f1f5f9; /* Fondo gris pizarra muy limpio */
+  color: #0f172a; /* Texto principal oscuro */
+
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+input, textarea {
+  font-family: inherit;
+  outline: none;
+}
