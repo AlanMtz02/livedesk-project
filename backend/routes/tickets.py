@@ -1,10 +1,12 @@
 from fastapi import APIRouter,Depends,HTTPException
 from schemas.Tickets import TicketOutSchema
+from schemas.Mensajes import MensajeOutSchema
 from config.db import get_db
 from sqlalchemy.orm import Session
 from utils.dependencies import obtener_usuario_actual
 from models.TicketChat import TicketChat
 from models.Usuario import Usuario
+from models.Mensaje import Mensaje
 
 ticket_router=APIRouter(prefix='/api/tickets',tags=['Gestión de tickets'])
 
@@ -82,3 +84,20 @@ def cerrar_ticket(id:int,usuario_actual:dict=Depends(obtener_usuario_actual),db:
     db.commit()
     db.refresh(ticket)
     return ticket
+
+@ticket_router.get('/{id}/mensajes',response_model=list[MensajeOutSchema])
+def obtener_historial_mensajes(id:int,usuario_actual:dict=Depends(obtener_usuario_actual),db:Session=Depends(get_db)):
+    """
+    Retorna todo el historial de mensajes de un ticket específico ordenado de forma ascendente (Primero los mas antiguos).
+    PROTEGIDO: Requiere token JWT válido.
+    """
+    #1.Validar que el ticket exista
+    ticket=db.query(TicketChat).filter(TicketChat==id).first()
+    if not ticket:
+        raise HTTPException(status_code=404,detail='El ticket solicitado no existe.')
+    
+    #2.Consultar y ordenar los mensajes del mas antiguo al mas reciente
+    mensajes=db.query(Mensaje).filter(Mensaje.ticket_id==id).order_by(Mensaje.creado_at.asc()).all()
+    
+    return mensajes
+    
