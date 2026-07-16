@@ -45,3 +45,40 @@ def asignar_ticket(id:int,usuario_actual:dict=Depends(get_db),db:Session=Depends
     return ticket  
     
     
+@ticket_router.get('/mis-activos',response_model=list[TicketOutSchema])
+def obtener_mis_tickets_activos(usuario_actual:dict=Depends(get_db),db:Session=Depends(get_db)):
+    """
+    Retorna la lista de los tickets que están siendo atendidos actualmente por el agente autenticado.
+    PROTEGIDO: Requiere token JWT válido.
+    """
+    agente_id_autenticado=int(usuario_actual.get('sub'))
+    # Filtrar en MySQL por el ID del agente y que el estado sea estrictamente 'activo'
+    tickets_activos=db.query(TicketChat).filter(TicketChat.agente_id==agente_id_autenticado,TicketChat.estado=='activo').all()
+    return tickets_activos
+
+@ticket_router.patch('/{id}/cerrar',response_model=TicketOutSchema)
+def cerrar_ticket(id:int,usuario_actual:dict=Depends(obtener_usuario_actual),db:Session=Depends(get_db)):
+    """
+    Cierra un ticket de chat activo.
+    PROTEGIDO: Requiere token JWT válido.
+    """
+    #1.Buscar el ticket por ID
+    ticket=db.query(TicketChat).filter(TicketChat.id==id).first()
+    if not ticket:
+        raise HTTPException(status_code=404,detail='El ticket solicitado no existe.')
+    
+    #2.Validar que el ticket no este cerrado
+    if ticket.estado=='cerrado':
+        raise HTTPException(status_code=400,detail='El estado del ticket ya esta cerrado.')
+    
+    # 3. Validar que el agente que lo cierra sea el dueño del ticket o que si al menos no es es el dueño, quien lo esta cerrando (el que esta logueado) es un supervisor
+    agente_id_autenticado=int(usuario_actual.get('sub'))
+    rol_autenticado=str(usuario_actual.get('rol'))
+    if ticket.agente_id!=agente_id_autenticado and rol_autenticado!='supervisor':
+        raise HTTPException(status_code=400, detail='No tienes permisos para cerrar un ticket asignado a otro agente.')
+    
+    #4.Actualizar el estado del ticket
+    ticket.estado='cerrado'
+    db.commit()
+    db.refresh(ticket)
+    return ticket
