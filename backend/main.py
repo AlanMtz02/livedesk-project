@@ -6,6 +6,7 @@ from config.db import Base,engine
 from routes.auth import auth_router
 from routes.tickets import ticket_router
 from routes.supervision import supervision_router
+from routes.chat import chat_router
 from fastapi.middleware.cors import CORSMiddleware
 
 # Crear las tablas en MySQL Workbench si no existen
@@ -26,6 +27,7 @@ app.add_middleware(
 app.include_router(auth_router)
 app.include_router(ticket_router)
 app.include_router(supervision_router)
+app.include_router(chat_router)
 
 @app.get('/')
 def Bienvenida():
