@@ -22,7 +22,7 @@ def obtener_tickets_en_espera(usuario_actual:dict=Depends(obtener_usuario_actual
     return tickets
 
 @ticket_router.post('/{id}/asignar',response_model=TicketOutSchema)
-def asignar_ticket(id:int,usuario_actual:dict=Depends(get_db),db:Session=Depends(get_db)):
+def asignar_ticket(id:int,usuario_actual:dict=Depends(obtener_usuario_actual),db:Session=Depends(get_db)):
     """
     Asigna un ticket en espera al agente que realiza la petición.
     PROTEGIDO: Requiere token JWT válido.
@@ -48,7 +48,7 @@ def asignar_ticket(id:int,usuario_actual:dict=Depends(get_db),db:Session=Depends
     
     
 @ticket_router.get('/mis-activos',response_model=list[TicketOutSchema])
-def obtener_mis_tickets_activos(usuario_actual:dict=Depends(get_db),db:Session=Depends(get_db)):
+def obtener_mis_tickets_activos(usuario_actual:dict=Depends(obtener_usuario_actual),db:Session=Depends(get_db)):
     """
     Retorna la lista de los tickets que están siendo atendidos actualmente por el agente autenticado.
     PROTEGIDO: Requiere token JWT válido.
@@ -77,7 +77,7 @@ def cerrar_ticket(id:int,usuario_actual:dict=Depends(obtener_usuario_actual),db:
     agente_id_autenticado=int(usuario_actual.get('sub'))
     rol_autenticado=str(usuario_actual.get('rol'))
     if ticket.agente_id!=agente_id_autenticado and rol_autenticado!='supervisor':
-        raise HTTPException(status_code=400, detail='No tienes permisos para cerrar un ticket asignado a otro agente.')
+        raise HTTPException(status_code=403, detail='No tienes permisos para cerrar un ticket asignado a otro agente.')
     
     #4.Actualizar el estado del ticket
     ticket.estado='cerrado'
@@ -92,7 +92,7 @@ def obtener_historial_mensajes(id:int,usuario_actual:dict=Depends(obtener_usuari
     PROTEGIDO: Requiere token JWT válido.
     """
     #1.Validar que el ticket exista
-    ticket=db.query(TicketChat).filter(TicketChat==id).first()
+    ticket=db.query(TicketChat).filter(TicketChat.id==id).first()
     if not ticket:
         raise HTTPException(status_code=404,detail='El ticket solicitado no existe.')
     
