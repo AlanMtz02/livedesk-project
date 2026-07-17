@@ -1,0 +1,106 @@
+.tarjeta {
+  background-color: #ffffff;
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  width: 100%;
+  max-width: 420px;
+}
+
+.titulo {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.subtitulo {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.grupoInput {
+  margin-bottom: 1.25rem;
+}
+
+.etiqueta {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 0.5rem;
+}
+
+.inputContenedor {
+  display: flex;
+  align-items: center;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 0.75rem;
+  background-color: #f8fafc;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+/*Presiona el input, y los estilos se aplican al contenedor pero no al input.Within es eso: si dentro hay un input, el focus pasara al contenedor y estos estilos se aplicaran al contenedor (al padre, el que lo envuelve)*/
+.inputContenedor:focus-within {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  background-color: #ffffff;
+}
+
+.icono{
+    color: #94a3b8;
+    margin-right: 0.75rem;
+    flex-shrink: 0;
+}
+
+.campo{
+    border: none;
+    background:transparent;
+    width: 100%;
+    font-size: 0.9rem;
+    color: #0f172a;
+}
+
+.botonEnviar{
+    background-color: #2563eb;
+    color: #ffffff;
+    padding: 0.75rem;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 1rem;
+    transition: background-color 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+/*Hover del boton cuando no esta desabilitado (cargando es false). */
+.botonEnviar:hover:not(:disabled) {
+  background-color: #1d4ed8;
+}
+
+.botonEnviar:disabled {
+  background-color: #93c5fd;
+  cursor: not-allowed;
+}
+
+.alertaError{
+    background-color: #fef2f2;
+    border-left: 4px solid #ef4444;
+    padding: 0.75rem;
+    color: #991b1b;
+    font-size: 0.875rem;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}

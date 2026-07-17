@@ -1,6 +1,7 @@
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/ui/ProtectedRoute";
+import LoginPage from "./components/pages/LoginPage";
 
 const LoginTemporal = () => {
   //Obtengo variables de contexto
@@ -123,7 +124,7 @@ function App() {
           {/* Ruta Pública: Login */}
           <Route
             path="/login"
-            element={<LoginTemporal></LoginTemporal>}
+            element={<LoginPage></LoginPage>}
           ></Route>
 
           {/* Ruta Protegida: Dashboard de Agente (Solo Rol: 'agente') */}
