@@ -2,6 +2,7 @@ import { AuthProvider, useAuth } from "./context/AuthContext";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/ui/ProtectedRoute";
 import LoginPage from "./components/pages/LoginPage";
+import { ChatProvider } from "./context/ChatContext";
 
 const LoginTemporal = () => {
   //Obtengo variables de contexto
@@ -119,42 +120,40 @@ const Pagina404 = () => (
 function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          {/* Ruta Pública: Login */}
-          <Route
-            path="/login"
-            element={<LoginPage></LoginPage>}
-          ></Route>
+      <ChatProvider>
+        <BrowserRouter>
+          <Routes>
+            {/* Ruta Pública: Login */}
+            <Route path="/login" element={<LoginPage></LoginPage>}></Route>
 
-          {/* Ruta Protegida: Dashboard de Agente (Solo Rol: 'agente') */}
-          <Route
-            path="/agente"
-            element={
-              <ProtectedRoute rolesPermitidos={["agente"]}>
-                <DashboardAgenteTemporal></DashboardAgenteTemporal>
-              </ProtectedRoute>
-            }
-          ></Route>
+            {/* Ruta Protegida: Dashboard de Agente (Solo Rol: 'agente') */}
+            <Route
+              path="/agente"
+              element={
+                <ProtectedRoute rolesPermitidos={["agente"]}>
+                  <DashboardAgenteTemporal></DashboardAgenteTemporal>
+                </ProtectedRoute>
+              }
+            ></Route>
 
-          {/* Ruta Protegida: Dashboard de Supervisor (Solo Rol: 'supervisor') */}
-          <Route
-            path="/supervision"
-            element={
-              <ProtectedRoute rolesPermitidos={["supervisor"]}>
-                <DashboardSupervisorTemporal></DashboardSupervisorTemporal>
-              </ProtectedRoute>
-            }
-          ></Route>
+            {/* Ruta Protegida: Dashboard de Supervisor (Solo Rol: 'supervisor') */}
+            <Route
+              path="/supervision"
+              element={
+                <ProtectedRoute rolesPermitidos={["supervisor"]}>
+                  <DashboardSupervisorTemporal></DashboardSupervisorTemporal>
+                </ProtectedRoute>
+              }
+            ></Route>
 
-          {/* Redirección por defecto: si entra a la raíz "/" decide a dónde mandarlo */}
-          <Route path="/" element={<Navigate to="/login" replace />} />
+            {/* Redirección por defecto: si entra a la raíz "/" decide a dónde mandarlo */}
+            <Route path="/" element={<Navigate to="/login" replace />} />
 
-          {/* Captura cualquier otra URL inválida */}
-          <Route path="*" element={<Pagina404></Pagina404>} />
-
-        </Routes>
-      </BrowserRouter>
+            {/* Captura cualquier otra URL inválida */}
+            <Route path="*" element={<Pagina404></Pagina404>} />
+          </Routes>
+        </BrowserRouter>
+      </ChatProvider>
     </AuthProvider>
   );
 }
