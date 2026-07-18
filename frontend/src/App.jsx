@@ -3,6 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/ui/ProtectedRoute";
 import LoginPage from "./components/pages/LoginPage";
 import { ChatProvider } from "./context/ChatContext";
+import DashboardLayout from "./components/layout/Dashboardlayout";
 
 const LoginTemporal = () => {
   //Obtengo variables de contexto
@@ -131,7 +132,9 @@ function App() {
               path="/agente"
               element={
                 <ProtectedRoute rolesPermitidos={["agente"]}>
-                  <DashboardAgenteTemporal></DashboardAgenteTemporal>
+                  <DashboardLayout>
+                    <DashboardAgenteTemporal></DashboardAgenteTemporal>
+                  </DashboardLayout>
                 </ProtectedRoute>
               }
             ></Route>
