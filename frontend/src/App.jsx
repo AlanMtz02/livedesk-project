@@ -4,6 +4,7 @@ import ProtectedRoute from "./components/ui/ProtectedRoute";
 import LoginPage from "./components/pages/LoginPage";
 import { ChatProvider } from "./context/ChatContext";
 import DashboardLayout from "./components/layout/Dashboardlayout";
+import SidebarTickets from "./components/layout/SidebarTickets";
 
 const LoginTemporal = () => {
   //Obtengo variables de contexto
@@ -67,22 +68,17 @@ const DashboardAgenteTemporal = () => {
   //Obtengo variables de contexto
   const { logout, usuario } = useAuth();
   return (
-    <div style={{ padding: "40px" }}>
-      <h1>🎧 Panel de Agente</h1>
-      <p style={{ margin: "10px 0" }}>
-        Bienvenido: <strong>{usuario?.correo}</strong> (ID: {usuario?.id})
-      </p>
-      <button
-        onClick={logout}
-        style={{
-          padding: "8px 16px",
-          backgroundColor: "#ef4444",
-          color: "white",
-          borderRadius: "4px",
-        }}
-      >
-        Cerrar Sesión
-      </button>
+    <div style={{ display: "flex", width: "100%", height: "100%" }}>
+      {/* Columna 2: Sidebar de Tickets */}
+      <SidebarTickets></SidebarTickets>
+
+      {/* Columna 3 (Temporal para pruebas visuales) */}
+      <div style={{ flex: 1, padding: "40px", backgroundColor: "#f8fafc" }}>
+        <h3>💬 Ventana de Chat (Próxima Tarea)</h3>
+        <p style={{ color: "#64748b" }}>
+          Selecciona un ticket de la lista para ver la conversación.
+        </p>
+      </div>
     </div>
   );
 };
@@ -144,7 +140,9 @@ function App() {
               path="/supervision"
               element={
                 <ProtectedRoute rolesPermitidos={["supervisor"]}>
-                  <DashboardSupervisorTemporal></DashboardSupervisorTemporal>
+                  <DashboardLayout>
+                    <DashboardSupervisorTemporal></DashboardSupervisorTemporal>
+                  </DashboardLayout>
                 </ProtectedRoute>
               }
             ></Route>
