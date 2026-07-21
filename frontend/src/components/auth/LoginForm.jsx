@@ -1,11 +1,16 @@
-import { use, useState } from "react";
+import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import styles from './LoginForm.module.css';
 import {Loader2, Lock, LogIn, Mail} from 'lucide-react'
+import { useNavigate } from "react-router-dom";
 
 function LoginForm(){
   //Obtener variables de contexto
   const { login } = useAuth();
+
+  //Instanciar navegador
+  const navigate=useNavigate();
+
   //Variables de estado
   const [correo, setCorreo] = useState("");
   const [contrasena, setContrasena] = useState("");
@@ -25,27 +30,31 @@ function LoginForm(){
     }
 
     try{
-        //Llamar al endpoint POST de login
-        const respuesta = await fetch("http://127.0.0.1:8000/api/auth/login",{
-            method:'POST',
-            headers:{
-                'Content-Type':'application/json',
-            },
-            body:JSON.stringify({
-                correo:correo, //Misma clave que espera el schema
-                password:contrasena,//Misma clave que espera el schema
-            })
-        });
+      //Llamar al endpoint POST de login
+      const respuesta = await fetch("http://127.0.0.1:8000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          correo: correo, //Misma clave que espera el schema
+          password: contrasena, //Misma clave que espera el schema
+        }),
+      });
 
-        const data=await respuesta.json()
-        if (!respuesta.ok) {
-          // Captura el 'Credenciales incorrectas.' de los raise HTTPException
-          throw new Error(data.detail || "Error al iniciar sesión.");
-        }
-
-        //Login exitoso. El backend devuelve el token, por lo tanto actualizamos usando la funcion login del contexto global que actualiza token, lo mete al local storage y datosUsuario lo actualiza
-        login(data.access_token)
-
+      const data = await respuesta.json();
+      if (!respuesta.ok) {
+        // Captura el 'Credenciales incorrectas.' de los raise HTTPException
+        throw new Error(data.detail || "Error al iniciar sesión.");
+      }
+      //Iniciar sesion usando la funcion login que mete al local storage el token que devuelve el backend, actualiza con seToken,setUsuario y devuelve el rol
+      const rol = login(data.access_token);
+      // Redirigir de inmediato usando el rol que devolvió el login()
+      if (rol === "supervisor") {
+        navigate("/supervision", { replace: true });
+      } else {
+        navigate("/agente", { replace: true });
+      }
     }
     catch(err){
         //Actualizar error

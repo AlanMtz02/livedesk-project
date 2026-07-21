@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useChat } from "../../context/ChatContext";
 import styles from "./VentanaChat.module.css";
-import { MessageSquareOff } from "lucide-react";
+import { MessageSquareOff, Send } from "lucide-react";
 
 function VentanaChat() {
   //Obtener variables de contexto
-  const { ticketActivo, mensajes, setMensajes, finalizarTicket } = useChat();
+  const { ticketActivo, mensajes, setMensajes, finalizarTicket,enviarMensaje } = useChat();
   const [textoMensaje, setTextoMensaje] = useState("");
 
   // Extraer la lista de mensajes correspondiente al ticket abierto
@@ -18,24 +18,12 @@ function VentanaChat() {
     e.preventDefault(); //Evita recargar la pagina en formularios
     if (!textoMensaje.trim() || !ticketActivo) return; //Valida que no envie ' ' o que exista un ticket seleccionado o activo
 
-    // Estructurar el nuevo objeto mensaje
-    const nuevoMensaje = {
-      id: Date.now(), // ID temporal para la key de React
-      ticket_id: ticketActivo.id,
-      remitente: "agente",
-      contenido: textoMensaje,
-      creado_at: new Date().toISOString(),
-    };
-
-    //Actualizar  el diccionario mensaje apuntando en la key del id del ticket
-    setMensajes((prev) => ({
-      ...prev, //Todos los mensajes anteriores
-      [ticketActivo.id]: [...(prev[ticketActivo.id] || [], nuevoMensaje)],
-    }));
+    // 2. Enviar a través del WebSocket expuesto por ChatContext
+    enviarMensaje(textoMensaje);
 
     //Limpiar el input
     setTextoMensaje("");
-  };
+  };;
 
   // CASO A: Si el agente NO ha seleccionado ningún ticket (ticketActivo === null)
   if (!ticketActivo) {
@@ -66,6 +54,7 @@ function VentanaChat() {
           <span className={styles.asuntoTicket}>
             Ticket #{ticketActivo.id} - Consulta General
           </span>
+        </div>
           {/* Conectamos la función 'finalizarTicket' pasando el ID del ticket activo */}
           <button
             className={styles.botonCerrarTicket}
@@ -73,7 +62,6 @@ function VentanaChat() {
           >
             Finalizar Ticket
           </button>
-        </div>
       </div>
       {/* ÁREA DE MENSAJES: Mapea la 'listaMensajes' extraída del diccionario */}
       <div className={styles.areaMensajes}>
@@ -90,12 +78,12 @@ function VentanaChat() {
               "agente"; /*Necesario para saber quien manda mensaje*/
             return (
               <div
-                key={msg.id}
+                key={index}
                 className={`${styles.burbujaMensaje} ${esAgente ? styles.mensajeAgente : styles.mensajeCliente}`}
               >
                 <div>{msg.contenido}</div>
                 <span className={styles.mensajeFecha}>
-                  {msg.fecha
+                  {msg.creado_at
                     ? new Date(msg.creado_at).toLocaleTimeString([], {
                         hour: "2-digit",
                         minute: "2-digit",
@@ -118,7 +106,7 @@ function VentanaChat() {
         />
         <button type="submit" className={styles.botonEnviar}>
           <span>Enviar</span>
-          <Send size={16} />
+          <Send size={16}></Send>
         </button>
       </form>
     </div>

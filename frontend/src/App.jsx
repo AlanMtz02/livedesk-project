@@ -6,6 +6,7 @@ import { ChatProvider } from "./context/ChatContext";
 import DashboardLayout from "./components/layout/Dashboardlayout";
 import SidebarTickets from "./components/layout/SidebarTickets";
 import VentanaChat from "./components/layout/VentanaChat";
+import ClientePruebaPage from "./components/pages/ClientePruebaPage";
 
 const LoginTemporal = () => {
   //Obtengo variables de contexto
@@ -123,9 +124,11 @@ function App() {
             <Route
               path="/agente"
               element={
+                <ProtectedRoute rolesPermitidos={["agente"]}>
                   <DashboardLayout>
                     <DashboardAgenteTemporal></DashboardAgenteTemporal>
                   </DashboardLayout>
+                </ProtectedRoute>
               }
             ></Route>
 
@@ -139,6 +142,12 @@ function App() {
                   </DashboardLayout>
                 </ProtectedRoute>
               }
+            ></Route>
+
+            {/**RUTA PARA EL CLIENTE DE PRUEBA */}
+            <Route
+              path="/cliente-prueba"
+              element={<ClientePruebaPage></ClientePruebaPage>}
             ></Route>
 
             {/* Redirección por defecto: si entra a la raíz "/" decide a dónde mandarlo */}
