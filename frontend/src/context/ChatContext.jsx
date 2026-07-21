@@ -167,7 +167,7 @@ export const ChatProvider = ({ children }) => {
       if (respuesta.ok) {
         // Si el ticket cerrado era el que estaba activo en pantalla, deseleccionamos
         if (ticketActivo && ticketActivo.id === ticketId) {
-          ticketActivo(null);
+          setTicketActivo(null);
         }
 
         //Volver ahora a cargar mis tickets activos porque se acabo de cerrar uno

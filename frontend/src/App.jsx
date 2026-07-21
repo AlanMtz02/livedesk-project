@@ -5,6 +5,7 @@ import LoginPage from "./components/pages/LoginPage";
 import { ChatProvider } from "./context/ChatContext";
 import DashboardLayout from "./components/layout/Dashboardlayout";
 import SidebarTickets from "./components/layout/SidebarTickets";
+import VentanaChat from "./components/layout/VentanaChat";
 
 const LoginTemporal = () => {
   //Obtengo variables de contexto
@@ -69,16 +70,11 @@ const DashboardAgenteTemporal = () => {
   const { logout, usuario } = useAuth();
   return (
     <div style={{ display: "flex", width: "100%", height: "100%" }}>
-      {/* Columna 2: Sidebar de Tickets */}
-      <SidebarTickets></SidebarTickets>
+      {/* Columna 2: Bandeja de entrada / Lista de tickets */}
+      <SidebarTickets />
 
-      {/* Columna 3 (Temporal para pruebas visuales) */}
-      <div style={{ flex: 1, padding: "40px", backgroundColor: "#f8fafc" }}>
-        <h3>💬 Ventana de Chat (Próxima Tarea)</h3>
-        <p style={{ color: "#64748b" }}>
-          Selecciona un ticket de la lista para ver la conversación.
-        </p>
-      </div>
+      {/* Columna 3: Área de conversación y respuestas */}
+      <VentanaChat></VentanaChat>
     </div>
   );
 };
@@ -127,11 +123,9 @@ function App() {
             <Route
               path="/agente"
               element={
-                <ProtectedRoute rolesPermitidos={["agente"]}>
                   <DashboardLayout>
                     <DashboardAgenteTemporal></DashboardAgenteTemporal>
                   </DashboardLayout>
-                </ProtectedRoute>
               }
             ></Route>
 
